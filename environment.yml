@@ -1,7 +1,10 @@
 name: recipemag
 channels:
-  - pytorch
+  - pytorch-nightly
   - defaults
+  - pyg
+  - pytorch
+  - conda-forge
   - https://repo.anaconda.com/pkgs/main
   - https://repo.anaconda.com/pkgs/r
 dependencies:
@@ -19,8 +22,8 @@ dependencies:
   - bottleneck=1.4.2=py312ha86b861_0
   - brotli-python=1.0.9=py312h313beb8_9
   - bzip2=1.0.8=h80987f9_6
-  - ca-certificates=2024.12.31=hca03da5_0
-  - certifi=2024.12.14=py312hca03da5_0
+  - ca-certificates=2025.1.31=hf0a4a13_0
+  - certifi=2024.12.14=pyhd8ed1ab_0
   - cffi=1.17.1=py312h3eb5a62_1
   - charset-normalizer=3.3.2=pyhd3eb1b0_0
   - comm=0.2.1=py312hca03da5_0
@@ -95,7 +98,7 @@ dependencies:
   - numpy=2.2.2=py312h7f4fdc5_0
   - numpy-base=2.2.2=py312he047099_0
   - openjpeg=2.5.2=h54b8e55_0
-  - openssl=3.0.15=h80987f9_0
+  - openssl=3.4.0=h81ee809_1
   - overrides=7.4.0=py312hca03da5_0
   - packaging=24.2=py312hca03da5_0
   - pandas=2.2.3=py312hcf29cfe_0
@@ -120,7 +123,7 @@ dependencies:
   - python-fastjsonschema=2.20.0=py312hca03da5_0
   - python-json-logger=3.2.1=py312hca03da5_0
   - python-tzdata=2023.3=pyhd3eb1b0_0
-  - pytorch=2.5.1=py3.12_0
+  - pytorch=2.6.0.dev20241112=py3.12_0
   - pytz=2024.1=py312hca03da5_0
   - pyyaml=6.0.2=py312h80987f9_0
   - pyzmq=26.2.0=py312h313beb8_0
@@ -145,8 +148,8 @@ dependencies:
   - threadpoolctl=3.5.0=py312h989b03a_0
   - tinycss2=1.4.0=py312hca03da5_0
   - tk=8.6.14=h6ba3021_0
-  - torchaudio=2.5.1=py312_cpu
-  - torchvision=0.20.1=py312_cpu
+  - torchaudio=2.5.0.dev20241118=py312_cpu
+  - torchvision=0.20.0.dev20241118=py312_cpu
   - tornado=6.4.2=py312h80987f9_0
   - tqdm=4.66.5=py312h989b03a_0
   - traitlets=5.14.3=py312hca03da5_0
@@ -164,4 +167,14 @@ dependencies:
   - zeromq=4.3.5=h313beb8_0
   - zlib=1.2.13=h18a0788_1
   - zstd=1.5.6=hfb09047_0
+  - pip:
+      - aiohappyeyeballs==2.4.4
+      - aiohttp==3.11.11
+      - aiosignal==1.3.2
+      - frozenlist==1.5.0
+      - fsspec==2025.2.0
+      - multidict==6.1.0
+      - propcache==0.2.1
+      - torch-geometric==2.6.1
+      - yarl==1.18.3
 prefix: /Users/sachinloecher/miniconda3/envs/recipemag
