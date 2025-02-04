@@ -101,7 +101,6 @@ def load_split_data(dataset_folder="data/"):
     # Normalize the sparse interaction matrix
     interaction_matrix = normalize(interaction_matrix, norm='l2', axis=1)
 
-    # **Do not convert to dense NumPy array**
     # **Keep as sparse format for memory efficiency**
     user_embeddings = interaction_matrix
 
@@ -113,9 +112,15 @@ def load_split_data(dataset_folder="data/"):
     train_end = int(0.8 * n)
     valid_end = int(0.9 * n)
 
-    train_set = user_embeddings[indices[:train_end]]
-    valid_set = user_embeddings[indices[train_end:valid_end]]
-    test_set = user_embeddings[indices[valid_end:]]
+    # ✅ **Fixed Slicing for Sparse Matrices**
+    train_set = user_embeddings[indices[:train_end], :]
+    valid_set = user_embeddings[indices[train_end:valid_end], :]
+    test_set = user_embeddings[indices[valid_end:], :]
+
+    # ✅ Convert back to `csr_matrix` explicitly (Ensures consistency)
+    train_set = csr_matrix(train_set)
+    valid_set = csr_matrix(valid_set)
+    test_set = csr_matrix(test_set)
 
     return train_set, valid_set, test_set
 
