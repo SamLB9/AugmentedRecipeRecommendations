@@ -167,6 +167,7 @@ dependencies:
   - zeromq=4.3.5=h313beb8_0
   - zlib=1.2.13=h18a0788_1
   - zstd=1.5.6=hfb09047_0
+  - faiss-cpu
   - pip:
       - aiohappyeyeballs==2.4.4
       - aiohttp==3.11.11
