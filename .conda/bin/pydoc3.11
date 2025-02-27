@@ -1,0 +1,5 @@
+#!/Users/jakedugan/Documents/UniversityofEdinburgh/MLP/mlp_cw34/RecipeMAG/.conda/bin/python3.11
+
+import pydoc
+if __name__ == '__main__':
+    pydoc.cli()
