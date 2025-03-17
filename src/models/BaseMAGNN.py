@@ -423,11 +423,11 @@ class MAGNNModel(nn.Module):
         # For aggregator, each neighbor path is [ user_feat, r_feat, i_feat, r2_feat ]
         # but let's limit ourselves to a small sample so it won't blow up.
         urir_paths = []
-        for r in recipes[:5]:  # sample up to 20, 5
+        for r in recipes[:20]:  # sample up to 20, 5
             r_feat = self.recipe_emb(torch.tensor([r], device=self.device)).squeeze(0)
             # gather ingredients
             ingredients = self.recipe2ingredients[r] if r in self.recipe2ingredients else []
-            for i_id in ingredients[:2]:  # sample up to 5, 2
+            for i_id in ingredients[:5]:  # sample up to 5, 2
                 # recipe->ingredient->(some-other-recipe)? 
                 # The original path is U->R->I->R. We can pick the same r or any r that uses ingredient i.
                 i_feat = self.ingredient_emb(torch.tensor([i_id], device=self.device)).squeeze(0)
@@ -469,7 +469,7 @@ class MAGNNModel(nn.Module):
             users = self.recipe2users.get(r_id, [])
         else:
             users = []
-        for u_id in users[:5]:  # sample, 5
+        for u_id in users[:20]:  # sample, 5, 20
             u_feat = self.user_emb(torch.tensor([u_id], device=self.device)).squeeze(0)
             RU_paths.append(torch.stack([recipe_feat, u_feat], dim=0))
 
@@ -479,7 +479,7 @@ class MAGNNModel(nn.Module):
         # path: [ recipe, i_feat, recipe2 ], but we’ll do a short version
         RIR_paths = []
         ings = self.recipe2ingredients.get(r_id, [])
-        for i_id in ings[:2]: # sample, 2, 5
+        for i_id in ings[:5]: # sample, 2, 5
             i_feat = torch.zeros(self.input_dim, device=self.device)  # or self.ingredient_emb(...) if you had it
             # pick r2 as same r or some other
             r2 = r_id  
@@ -562,8 +562,8 @@ class Trainer(object):
 
     def train_epoch(self, train_pos, train_neg, batch_size=512):
         self.model.train()
-        pairs_pos = train_pos[:10000]  # limit to 10k for speed
-        pairs_neg = train_neg[:10000]  # limit to 10k for speed
+        # pairs_pos = train_pos[:10000]  # limit to 10k for speed
+        # pairs_neg = train_neg[:10000]  # limit to 10k for speed
         random.shuffle(pairs_pos)
         random.shuffle(pairs_neg)
 
@@ -747,10 +747,10 @@ def main():
 
     # Training loop
     best_val_auc = 0.0
-    patience = 3
+    patience = 5
     cur_patience = 0
     best_state = None
-    max_epochs = 2 #10
+    max_epochs = 20 #10
 
     
     for ep in range(max_epochs):
