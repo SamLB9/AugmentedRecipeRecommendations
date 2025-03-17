@@ -599,31 +599,31 @@ class Trainer(object):
             labels = torch.tensor(labels, dtype=torch.float32, device=self.device)
 
             # DEBUG PRINT 1: Inspect data for each batch
-            print(f"\n[DEBUG] Batch {i+1}/{n_batches}")
-            print(f"  user_ids[:5]: {user_ids[:5].cpu().numpy()}")
-            print(f"  recipe_ids[:5]: {recipe_ids[:5].cpu().numpy()}")
-            print(f"  labels[:10]: {labels[:10].cpu().numpy()}")  # first 10 labels
-            print(f"  labels[-10:]: {labels[-10:].cpu().numpy()}")  # last 10 labels
+            # print(f"\n[DEBUG] Batch {i+1}/{n_batches}")
+            # print(f"  user_ids[:5]: {user_ids[:5].cpu().numpy()}")
+            # print(f"  recipe_ids[:5]: {recipe_ids[:5].cpu().numpy()}")
+            # print(f"  labels[:10]: {labels[:10].cpu().numpy()}")  # first 10 labels
+            # print(f"  labels[-10:]: {labels[-10:].cpu().numpy()}")  # last 10 labels
 
             # DEBUG PRINT 2: Print model parameter snippet before update
             # Example: user_emb (first row, first 5 dims)
-            print(f"  model.user_emb.weight[0, :5] BEFORE step: {self.model.user_emb.weight[0, :5].detach().cpu().numpy()}")
+            # print(f"  model.user_emb.weight[0, :5] BEFORE step: {self.model.user_emb.weight[0, :5].detach().cpu().numpy()}")
 
 
             self.optimizer.zero_grad()
             logits = self.model.forward(user_ids, recipe_ids)
 
             # DEBUG PRINT 3: Check logits for the first few samples
-            print(f"  logits[:5]: {logits[:5].detach().cpu().numpy()}")
+            # print(f"  logits[:5]: {logits[:5].detach().cpu().numpy()}")
 
             loss = bce_loss_fn(logits, labels)
             loss.backward()
-            grad_norm = self.model.user_emb.weight.grad.norm().item()
-            print(f"  Gradient norm for user_emb.weight: {grad_norm:.6f}")
+            # grad_norm = self.model.user_emb.weight.grad.norm().item()
+            # print(f"  Gradient norm for user_emb.weight: {grad_norm:.6f}")
             self.optimizer.step()
             
             # DEBUG PRINT 4: Print same model parameter snippet after update
-            print(f"  model.user_emb.weight[0, :5] AFTER step: {self.model.user_emb.weight[0, :5].detach().cpu().numpy()}")
+            # print(f"  model.user_emb.weight[0, :5] AFTER step: {self.model.user_emb.weight[0, :5].detach().cpu().numpy()}")
 
             # DEBUG PRINT 5: Print batch loss with more decimals
             print(f"  Batch Loss: {loss.item():.6f}")
