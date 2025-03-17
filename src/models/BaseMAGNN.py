@@ -562,8 +562,8 @@ class Trainer(object):
 
     def train_epoch(self, train_pos, train_neg, batch_size=512):
         self.model.train()
-        # pairs_pos = train_pos[:10000]  # limit to 10k for speed
-        # pairs_neg = train_neg[:10000]  # limit to 10k for speed
+        pairs_pos = train_pos[:]  # limit to 10k for speed
+        pairs_neg = train_neg[:]  # limit to 10k for speed
         random.shuffle(pairs_pos)
         random.shuffle(pairs_neg)
 
