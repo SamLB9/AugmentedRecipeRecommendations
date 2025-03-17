@@ -562,8 +562,10 @@ class Trainer(object):
 
     def train_epoch(self, train_pos, train_neg, batch_size=512):
         self.model.train()
-        pairs_pos = train_pos[:]  # limit to 10k for speed
-        pairs_neg = train_neg[:]  # limit to 10k for speed
+        random.shuffle(train_pos)
+        random.shuffle(train_neg)
+        pairs_pos = train_pos[:10000]  # limit to 10k for speed
+        pairs_neg = train_neg[:10000]  # limit to 10k for speed
         random.shuffle(pairs_pos)
         random.shuffle(pairs_neg)
 
@@ -596,19 +598,44 @@ class Trainer(object):
             recipe_ids = torch.tensor(recipe_ids, device=self.device)
             labels = torch.tensor(labels, dtype=torch.float32, device=self.device)
 
+            # DEBUG PRINT 1: Inspect data for each batch
+            print(f"\n[DEBUG] Batch {i+1}/{n_batches}")
+            print(f"  user_ids[:5]: {user_ids[:5].cpu().numpy()}")
+            print(f"  recipe_ids[:5]: {recipe_ids[:5].cpu().numpy()}")
+            print(f"  labels[:10]: {labels[:10].cpu().numpy()}")  # first 10 labels
+            print(f"  labels[-10:]: {labels[-10:].cpu().numpy()}")  # last 10 labels
+
+            # DEBUG PRINT 2: Print model parameter snippet before update
+            # Example: user_emb (first row, first 5 dims)
+            print(f"  model.user_emb.weight[0, :5] BEFORE step: {self.model.user_emb.weight[0, :5].detach().cpu().numpy()}")
+
+
             self.optimizer.zero_grad()
             logits = self.model.forward(user_ids, recipe_ids)
+
+            # DEBUG PRINT 3: Check logits for the first few samples
+            print(f"  logits[:5]: {logits[:5].detach().cpu().numpy()}")
+
             loss = bce_loss_fn(logits, labels)
             loss.backward()
+            grad_norm = self.model.user_emb.weight.grad.norm().item()
+            print(f"  Gradient norm for user_emb.weight: {grad_norm:.6f}")
             self.optimizer.step()
+            
+            # DEBUG PRINT 4: Print same model parameter snippet after update
+            print(f"  model.user_emb.weight[0, :5] AFTER step: {self.model.user_emb.weight[0, :5].detach().cpu().numpy()}")
+
+            # DEBUG PRINT 5: Print batch loss with more decimals
+            print(f"  Batch Loss: {loss.item():.6f}")
 
             total_loss += loss.item()
             
             # Print batch progress (flush immediately)
             print(f"Batch {i+1}/{n_batches} - Loss: {loss.item():.4f}  Running Avg: {total_loss/(i+1):.4f}")
-            sys.stdout.flush()
 
-        return total_loss / n_batches
+        avg_loss = total_loss / n_batches
+        print(f"\n[DEBUG] End of Epoch - Average Loss: {avg_loss:.6f}")
+        return avg_loss
 
     def evaluate_auc_ap(self, pos_edges, neg_edges, batch_size=512):
         """
@@ -743,7 +770,7 @@ def main():
         device=device
     )
 
-    trainer = Trainer(model, data_loader, device=device, lr=0.001, weight_decay=1e-5)
+    trainer = Trainer(model, data_loader, device=device, lr=0.05, weight_decay=1e-5) # 0.001, 0.05, 1e-4
 
     # Training loop
     best_val_auc = 0.0
